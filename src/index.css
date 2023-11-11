@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* import {clear-sky} "./clear-sky.jpg" */
+
+/* .app {
+  background-image: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.61)
+    ),
+    url("./assets/image/clear-sky.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+} */
+
+.shadow {
+  /* width: 60%; */
+  /* border-radius: 15px; */
+  /* padding: 60px; */
+  /* background: rgba(184,182,182,.15); */
+  /* backdrop-filter: blur(10px); */
+  box-shadow: 0 8px 32px #1f26875e;
+  color: #fff;
+  /* min-height: 400px; */
+}

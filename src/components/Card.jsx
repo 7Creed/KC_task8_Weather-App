@@ -1,29 +1,14 @@
-// import { useParams } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom";
-import { getCurrentTime, useFetch, getWeatherIcon } from "../api/useFetch";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { getCurrentTime, getWeatherIcon, useFetch } from "../api/useFetch";
 import { useGlobalContext } from "../context/context";
-
 import { BsArrowLeft } from "react-icons/bs";
-import { useEffect } from "react";
 
 const HeaderCard = () => {
-  // const { lat, long, setLat, setLong } = useGlobalContext();
-  const { weatherData, lat, long, setLat, setLong } =
-    useGlobalContext();
+  const { weatherData } = useGlobalContext();
   const { main, name, weather, sys } = weatherData;
 
   const currentTime = getCurrentTime();
   const weatherIcon = getWeatherIcon(weatherData);
-  // console.log(weatherIcon)
-  // console.log(weatherData)
-
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(function (position) {
-  //     setLat(position.coords.latitude);
-  //     setLong(position.coords.longitude);
-  //   });
-  // }, [lat, long]);
 
   return (
     <>
@@ -48,9 +33,8 @@ const SideBarCard = () => {
   const { weatherData } = useGlobalContext();
   const { main, name, weather, sys, wind } = weatherData;
 
-  const currentTime = getCurrentTime();
-  const weatherIcon = getWeatherIcon(weatherData);
-
+  // const currentTime = getCurrentTime();
+  // const weatherIcon = getWeatherIcon(weatherData);
   return (
     <>
       <div className="pb-6">
@@ -75,16 +59,32 @@ const SideBarCard = () => {
 };
 
 const SearchResultCard = () => {
-  const { resultData, setResultData } = useGlobalContext();
-
-  const { searchValue } = useParams();
+  const { resultData } = useGlobalContext();
   const navigate = useNavigate();
-  const searchData = useFetch("", "", searchValue);
-  setResultData(searchData);
-  const { main, name, weather, sys, wind } = searchData;
+  const {searchValue} = useParams();
+
+  console.log(searchValue)
+  console.log(resultData)
 
   const currentTime = getCurrentTime();
   const weatherIcon = getWeatherIcon(resultData);
+
+  const { data: searchData, isLoading, error } = useFetch("", "", searchValue);
+  
+  const { main, name, weather, sys, wind } = searchData;
+
+  // useEffect(() => {
+  //   if (searchData && searchData.name) {
+
+  //     setResultData(searchData);
+  //     navigate(`/search-result/${searchData.name}`);
+  //   }
+  // }, [searchData, navigate]);
+
+  if (isLoading) {
+    // You can render a loading state or handle the absence of data in another way
+    return <p>Loading...</p>;
+  }
 
   const handleGoBack = () => {
     navigate(-1);

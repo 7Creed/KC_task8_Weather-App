@@ -1,14 +1,30 @@
-import React, { useEffect } from "react";
-
-import { getBackgroundImage } from "../api/useFetch";
-
-
+import React, { useEffect, useRef, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getBackgroundImage, useFetch } from "../api/useFetch";
 import HomeLeft from "../components/HomeLeft";
 import HomeRight from "../components/HomeRight";
 import { useGlobalContext } from "../context/context";
 
+import Modal from "./Modal";
+
 const Home = () => {
-  const { lat, long, setLat, setLong } = useGlobalContext();
+  const {
+    weatherData,
+    lat,
+    long,
+    setLat,
+    setLong,
+    setSearchResults,
+    setResultData,
+    searchResults,
+    setIsError,
+  } = useGlobalContext();
+  const { searchValue } = useParams();
+  const [showModal, setShowModal] = useState(false);
+  const [inputVal, setInputVal] = useState("");
+
+  const navigate = useNavigate();
+  const inputRef = useRef(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -22,9 +38,7 @@ const Home = () => {
   //   return celsius;
   // };
 
-  const { weatherData  } = useGlobalContext();
   const image = getBackgroundImage(weatherData);
-
   const homeStyles = {
     backgroundImage: `linear-gradient(
       45deg,
@@ -37,20 +51,76 @@ const Home = () => {
     backgroundPosition: "bottom",
   };
 
+  const { data: searchData, isLoading, error } = useFetch("", "", inputVal);
+
+  useEffect(() => {
+    if (searchData && searchData.name) {
+      setResultData(searchData);
+      navigate(`/search-result/${searchData.name}`);
+    }
+  }, [searchData, navigate]);
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    const inputValue = inputRef.current.value;
+
+    setInputVal(inputValue);
+
+    inputRef.current.value = "";
+
+    setSearchResults((prevResults) => {
+      let savedResult = prevResults?.some(
+        (prev) => inputValue.toLowerCase() === prev.toLowerCase()
+      );
+
+      const updatedResults = savedResult
+        ? prevResults
+        : [...prevResults, inputValue];
+
+      return updatedResults;
+    });
+
+    if (error) {
+      // console.log(error);
+      // Set a timer to display the error modal after 2 seconds
+      setTimeout(() => {
+        setIsError(error);
+        setShowModal(true);
+      }, 3000);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <>
+      {showModal && <Modal handleCloseModal={handleCloseModal} />}
+
       <div
-        className="flex flex-col lg:flex-row justify-between"
+        className="flex justify-center items-center h-screen"
         style={homeStyles}
       >
-        <div className="lg:w-[65%]">
-          <HomeLeft
-          // convertKelvinToCelsius={convertKelvinToCelsius}
-          />
-        </div>
-        <div className="lg:w-[35%]">
-          <HomeRight />
-        </div>
+        {isLoading ? (
+          <p className="text-white text-center text-xl border py-4 px-10 w-[50%]">
+            Loading...
+          </p>
+        ) : (
+          <div
+            className="flex flex-col lg:flex-row justify-between"
+            // style={homeStyles}
+          >
+            <div className="lg:w-[65%]">
+              <HomeLeft
+              // convertKelvinToCelsius={convertKelvinToCelsius}
+              />
+            </div>
+            <div className="lg:w-[35%]">
+              <HomeRight handleSearch={handleSearch} inputRef={inputRef} />
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

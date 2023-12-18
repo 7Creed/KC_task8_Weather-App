@@ -3,7 +3,7 @@ import { HeaderCard } from "./Card";
 
 const HomeLeft = () => {
   const { weatherData } = useGlobalContext();
-  console.log(weatherData)
+  // console.log(weatherData)
 
 
   return (
@@ -13,7 +13,7 @@ const HomeLeft = () => {
           <h2 className="text-xl font-bold">Weather-wiz</h2>
         </div>
         <div className="">
-          {Object.keys(weatherData).length > 0 ? (
+          {Object.keys(weatherData)?.length > 0 ? (
             <HeaderCard />
           ) : (
             <div className="">

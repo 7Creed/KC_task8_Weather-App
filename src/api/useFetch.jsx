@@ -2,28 +2,38 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import { FaSun, FaCloudSun, FaCloudRain, FaSnowflake } from "react-icons/fa";
-
 import clear from "../assets/image/clear-sky.jpg";
 import clouds from "../assets/image/cloudy.jpg";
 import rainy from "../assets/image/rainy.jpg";
 import snow from "../assets/image/snow.png";
 
 const useFetch = (lat, lng, city = "") => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const API_URL = "https://api.openweathermap.org/data/2.5/weather";
-  const API_KEY = "60308ab9c96df9b239ae6f90024a2f58";
+  // const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
+  const API_KEY = import.meta.env.VITE_API_KEY;
 
   const fetchData = async function () {
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await axios.get(
         // &units=metric
         `${API_URL}/?lat=${lat}&lon=${lng}&q=${city}&appid=${API_KEY}&units=metric`
       );
-      setData(response.data);
-      console.log(response.data);
+
+      if (response.statusText === "OK") {
+        setData(response.data);
+      }
     } catch (err) {
       console.log(err);
+      setError("Error fetching weather data. Please try again.");
+      // setError("Your search does not exist. Seems you made a mistake. Check again!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -31,7 +41,8 @@ const useFetch = (lat, lng, city = "") => {
     fetchData();
   }, [lat, lng, city]);
 
-  return data;
+  // return data;
+  return { data, error, fetchData, isLoading };
 };
 
 const getCurrentTime = () => {

@@ -1,12 +1,14 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { SearchResultCard } from "../components/Card";
 import { useGlobalContext } from "../context/context";
 import { getBackgroundImage } from "../api/useFetch";
 
 const SearchResult = () => {
   const { resultData } = useGlobalContext();
-  const { searchValue } = useParams();
+  // const { searchValue } = useParams();
+  // const navigate = useNavigate();
 
+  // const image = getBackgroundImage(searchData);
   const image = getBackgroundImage(resultData);
 
   const searchResultStyles = {
@@ -29,7 +31,9 @@ const SearchResult = () => {
       >
         <div className="shadow flex bg-opacity-[0.15] justify- items- p-10 border rounded-xl backdrop-blur backdrop-filter min:h-[500px] w-[700px]">
           <div className="w-[100%]">
-            <SearchResultCard />
+            <SearchResultCard 
+            // resultData={resultData} 
+            />
           </div>
         </div>
       </div>

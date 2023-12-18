@@ -1,49 +1,17 @@
 import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { SideBarCard } from "./Card";
-import { useFetch } from "../api/useFetch";
 import { useGlobalContext } from "../context/context";
 import { AiOutlineClose } from "react-icons/ai";
+// import Modal from "../pages/Modal";
 
-const HomeRight = () => {
+const HomeRight = ({ handleSearch, inputRef }) => {
   const { searchResults, setSearchResults } = useGlobalContext();
-  const inputRef = useRef(null);
-  const [searchValue, setSearchValue] = useState("");
+  // const localData = JSON.parse(localStorage.getItem("searchResults"));
 
-  const navigate = useNavigate();
-
-  // const handleInputChange = (e) => {
-  //   console.log('Input value:', inputRef.current.value)
-  // }
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const inputValue = inputRef.current.value;
-
-    console.log("Input Value:", inputValue);
-
-    inputRef.current.value = "";
-
-    setSearchResults((prevResults) => {
-      let savedResult = prevResults?.some(
-        (prev) => inputValue.toLowerCase() === prev.toLowerCase()
-      );
-
-      console.log("Previous Search Results:", searchResults);
-      const updatedResults = savedResult
-        ? prevResults
-        : [...prevResults, inputValue];
-      console.log("Updated Search Results:", searchResults);
-      return updatedResults;
-    });
-
-    navigate(`/search-result/${inputValue}`);
-  };
-  // console.log(searchResults);
-
+  // localStorage.clear()
   const handleDelBtn = (num) => {
-    console.log(num);
-    console.log(searchResults);
     setSearchResults((prevs) => prevs.filter((_, index) => index + 1 !== num));
   };
 
@@ -71,8 +39,8 @@ const HomeRight = () => {
           </form>
 
           <div className="text-white py-10">
-            <p className="">Your Previous Searches</p>
-            <div className="previous-search h-24 w-[100%] overflow-y-auto pr-5">
+            <p className="underline">Your Previous Searches</p>
+            <div className="previous-search h-28 w-[100%] overflow-y-auto pr-5 pl-3">
               <ul className="">
                 {searchResults
                   .map((result, index) => {
@@ -80,14 +48,17 @@ const HomeRight = () => {
                     return (
                       <li
                         key={idx}
-                        className="flex justify-between items-center"
+                        className="flex justify-between items-center text-xl py-1"
                       >
-                        <Link to={`/search-result/${result}`} className="flex-grow">
-                          {console.log(result)}
+                        <Link
+                          to={`/search-result/${result}`}
+                          className="flex-grow"
+                        >
+                          {/* {console.log(result)} */}
                           <span className="">{result}</span>
                         </Link>
                         <div className="" onClick={() => handleDelBtn(idx)}>
-                          <AiOutlineClose className="text-red-600 bg-[#cccccc]" />
+                          <AiOutlineClose className="text-red-600 bg-[#cccccc] p-1 text-4xl rounded-md" />
                         </div>
                       </li>
                     );

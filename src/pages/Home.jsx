@@ -99,7 +99,7 @@ const Home = () => {
       {showModal && <Modal handleCloseModal={handleCloseModal} />}
 
       <div
-        className="flex justify-center items-center h-screen"
+        className="flex justify-center items-center min-h-screen"
         style={homeStyles}
       >
         {isLoading ? (
@@ -108,7 +108,7 @@ const Home = () => {
           </p>
         ) : (
           <div
-            className="flex flex-col lg:flex-row justify-between"
+            className="flex flex-col lg:flex-row justify-between w-full"
             // style={homeStyles}
           >
             <div className="lg:w-[65%]">
